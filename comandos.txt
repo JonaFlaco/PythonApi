@@ -1,0 +1,8 @@
+INSTALACIONES
+pip install flask flask-cors psycopg2 python-decouple python-dotenv
+
+CORRER EL PROYECTO
+python .\src\app.py
+
+ACTIVAR EL ENTORNO VIRTUAL
+.\.venv\Scripts\activate
