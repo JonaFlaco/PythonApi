@@ -30,7 +30,7 @@ def get_orderDetail(id):
     except Exception as ex:
         return jsonify({'message': str(ex)}), 500
 
-# AGREGAR UN DETALLE DE ORDEN
+# AGREGAR UNA ORDEN DE DETALLE
 @main.route('/post', methods=['POST'])
 def add_orderDetail():
     try:
@@ -38,7 +38,8 @@ def add_orderDetail():
         amount = request.json['amount']
         unitPrice = request.json['unitPrice']
         personId = request.json['personId']
-        orderDetail = OrderDetail(str(id), amount, unitPrice, personId)
+        productId = request.json['productId']
+        orderDetail = OrderDetail(str(id), amount, unitPrice, personId, productId)
 
         affected_rows = OrderDetailModel.add_orderDetail(orderDetail)
 
@@ -70,7 +71,8 @@ def update_orderDetail(id):
         amount = request.json['amount']
         unitPrice = request.json['unitPrice']
         personId = request.json['personId']
-        orderDetail = OrderDetail(id, amount, unitPrice, personId)
+        productId = request.json['productId']
+        orderDetail = OrderDetail(id, amount, unitPrice, personId, productId)
 
         affected_rows = OrderDetailModel.update_orderDetail(orderDetail)
 
