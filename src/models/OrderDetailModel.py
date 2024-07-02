@@ -3,7 +3,7 @@ from .entities.OrderDetail import OrderDetail
 
 class OrderDetailModel():
 
-# OBTENER TODOS LOS USUARIOS
+#OBTENER TODOS LOS DETALLES DE ORDEN
     @classmethod
     def get_orderDetails(self):
         try:
@@ -11,31 +11,31 @@ class OrderDetailModel():
             orderDetails = []
 
             with connection.cursor() as cursor:
-                cursor.execute("SELECT id, amount, unit_price FROM order_detail ORDER BY amount ASC")
+                cursor.execute("SELECT id, amount, unit_price, person_id FROM order_detail ORDER BY amount ASC")
                 resultset = cursor.fetchall()
 
                 for row in resultset:
-                    orderDetail = OrderDetail(row[0], row[1], row[2])
+                    orderDetail = OrderDetail(row[0], row[1], row[2], row[3])
                     orderDetails.append(orderDetail.to_JSON())
 
             connection.close()
             return orderDetails
         except Exception as ex:
             raise Exception(ex)
-        
-# OBTENER UN USUARIO
+
+#OBTENER UN DETALLE DE ORDEN
     @classmethod
     def get_orderDetail(self, id):
         try:
             connection = get_connection()
 
             with connection.cursor() as cursor:
-                cursor.execute("SELECT id, amount, unit_price FROM order_detail WHERE id = %s", (id,))
+                cursor.execute("SELECT id, amount, unit_price, person_id FROM order_detail WHERE id = %s", (id,))
                 row = cursor.fetchone()
 
                 orderDetail = None
                 if row != None:
-                    orderDetail = OrderDetail(row[0], row[1], row[2])
+                    orderDetail = OrderDetail(row[0], row[1], row[2], row[3])
                     orderDetail = orderDetail.to_JSON()
 
             connection.close()
@@ -43,15 +43,15 @@ class OrderDetailModel():
         except Exception as ex:
             raise Exception(ex)
 
-# REGISTRAR UN USUARIO
+#REGISTRAR UN DETALLE DE ORDEN
     @classmethod
     def add_orderDetail(self, orderDetail):
         try:
             connection = get_connection()
 
             with connection.cursor() as cursor:
-                cursor.execute("""INSERT INTO order_detail (id, amount, unit_price) 
-                               VALUES(%s, %s, %s)""",(orderDetail.id, orderDetail.amount, orderDetail.unitPrice))
+                cursor.execute("""INSERT INTO order_detail (id, amount, unit_price, person_id) 
+                               VALUES(%s, %s, %s, %s)""",(orderDetail.id, orderDetail.amount, orderDetail.unitPrice, orderDetail.personId))
                 affected_rows = cursor.rowcount
                 connection.commit()
 
@@ -60,7 +60,7 @@ class OrderDetailModel():
         except Exception as ex:
             raise Exception(ex)
 
-# ELIMINAR UN USUARIO
+#ELIMINAR UN DETALLE DE ORDEN
     @classmethod
     def delete_orderDetail(self, orderDetail):
         try:
@@ -75,16 +75,16 @@ class OrderDetailModel():
             return affected_rows
         except Exception as ex:
             raise Exception(ex)
-        
-# ACTUALIZAR UN USUARIO
+
+#ACTUALIZAR UN DETALLE DE ORDEN
     @classmethod
     def update_orderDetail(self, orderDetail):
         try:
             connection = get_connection()
 
             with connection.cursor() as cursor:
-                cursor.execute("""UPDATE order_detail SET amount = %s, unit_price = %s
-                               WHERE id = %s""",(orderDetail.amount, orderDetail.unitPrice, orderDetail.id))
+                cursor.execute("""UPDATE order_detail SET amount = %s, unit_price = %s, person_id = %s
+                               WHERE id = %s""",(orderDetail.amount, orderDetail.unitPrice, orderDetail.personId, orderDetail.id))
                 affected_rows = cursor.rowcount
                 connection.commit()
 
