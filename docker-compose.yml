@@ -1,0 +1,42 @@
+version: '3.8'
+
+volumes:
+  db_data: {}
+
+services:
+  postgres-db:
+    image: postgres
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: python_api
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./python_api.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: unless-stopped
+
+  api:
+    build: ./src
+    image: apipython-backend
+    ports:
+      - 8000:8000
+    environment:
+      DB_URL: postgresql+psycopg2://postgres:123456@postgres-db:5432/python_api
+      ALGORITHM: ${ALGORITHM}
+      ENVIRONMENT: ${ENVIRONMENT}
+    env_file:
+      - .env
+    depends_on:
+      - postgres-db
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - api
+    ports:
+      - "80:80"
