@@ -1,5 +1,6 @@
 from flask import Flask
 from config import config
+from flasgger import Swagger
 
 # Rutas
 from routes import Person
@@ -8,6 +9,7 @@ from routes import Request
 from routes import OrderDetail
 
 app = Flask(__name__)
+swagger = Swagger(app)  # Inicializa Swagger
 
 def page_not_found(error): 
     return "<h1>Pagina no encontrada</h1>", 404
@@ -21,6 +23,6 @@ if __name__ == '__main__':
     app.register_blueprint(Request.main, url_prefix='/api/requests')
     app.register_blueprint(OrderDetail.main, url_prefix='/api/orderDetails')
 
-    #Error Handler
+    # Error Handler
     app.register_error_handler(404, page_not_found)
-    app.run()
+    app.run(host='0.0.0.0', port=8000, debug=True)  # Asegúrate de que se exponga en todas las interfaces
